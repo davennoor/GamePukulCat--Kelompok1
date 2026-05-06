@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pukul Tikus Aestethic</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="sound-ctrl" id="sound-toggle">
+            <i data-lucide="volume-2"></i>
+        </div>
+
+        <div class="header">
+            <h1>Pukul <span style="color:var(--pink)">Cat!</span></h1>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Skor</span>
+                    <span id="score" class="stat-value">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Waktu</span>
+                    <span id="timer" class="stat-value">30</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Record</span>
+                    <span id="high-score" class="stat-value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-board">
+    <!-- Ulangi blok ini sebanyak 9 kali -->
+    <div class="hole">
+        <div class="mole">
+            <img src="kucinglucu.png" alt="mole" class="mole-img">
+        </div>
+    </div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
+</div>
+
+        <button id="start-btn" class="btn-main">Mulai Bermain</button>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-card">
+            <h2>Selesai!</h2>
+            <p>Skor kamu: <span id="final-score" style="color:var(--pink); font-weight:bold;">0</span></p>
+            <button id="restart-btn" class="btn-main">Coba Lagi</button>
+        </div>
+    </div>
+
+    <audio id="sfx-hit" src="meow.mp3"></audio>
+    <audio id="bg-music" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
