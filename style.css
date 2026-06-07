@@ -1,203 +1,87 @@
-:root {
-            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --mint: #b2dfdb;
-            --pink: #ff80ab;
-            --soft-blue: #90caf9;
-            --text: #2d3436;
-            --hole-shadow: inset 8px 8px 15px rgba(0,0,0,0.1), inset -8px -8px 15px rgba(255,255,255,0.8);
-            --card-shadow: 15px 15px 30px rgba(0,0,0,0.05), -15px -15px 30px rgba(255,255,255,0.9);
-        }
+/* =========================================
+   2. BAGIAN GAYA TAMPILAN (CSS / style.css)
+   =========================================
+   Catatan: Berisi semua aturan visual, efek bayangan Neomorphism,
+   dan efek transisi animasi kucing memantul.
+*/
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Quicksand', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #f3f4f6 0%, #e5e7eb 100%);
+    /* Mencegah zoom tidak sengaja saat menepuk layar HP berkali-kali */
+    touch-action: manipulation;
+}
 
-        body {
-            background: var(--bg-gradient);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding: 10px;
-        }
+/* Gaya Neomorphism Lembut (Terinspirasi dari Screenshot UI Kucing Anda) */
+.neo-inset {
+    box-shadow: inset 6px 6px 12px #d1d5db, inset -6px -6px 12px #ffffff;
+}
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            border-radius: 40px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(255,255,255,0.5);
-            position: relative;
-        }
+.neo-flat {
+    box-shadow: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff;
+}
 
-        .sound-ctrl {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: 0.3s;
-        }
-        .sound-ctrl:hover { opacity: 1; transform: scale(1.1); }
+.neo-btn {
+    box-shadow: 4px 4px 10px #d1d5db, -4px -4px 10px #ffffff;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        h1 {
-            font-size: 2.2rem;
-            color: #55a8a0;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
-        }
+.neo-btn:active {
+    box-shadow: inset 2px 2px 5px #d1d5db, inset -2px -2px 5px #ffffff;
+    transform: scale(0.97);
+}
 
-                /* Pastikan mole bisa menampung gambar dengan benar */
-        .mole {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
+/* Container Masker agar kucing tidak terlihat saat bersembunyi */
+.cat-container {
+    perspective: 1000px;
+    overflow: hidden;
+}
 
-        /* Mengatur ukuran gambar kucing */
-        .mole-img {
-            width: 80%; /* Sesuaikan ukuran kucing di sini */
-            height: auto;
-            object-fit: contain;
-            pointer-events: none; /* Biar klik tetap kena ke div .mole */
-            user-select: none;
-            -webkit-user-drag: none;
-        }
+/* Animasi Transisi Kucing Memantul ke Atas (Spring/Bounce Effect) */
+.cat-character {
+    transform: translateY(110%) scale(0.9);
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s;
+    opacity: 0;
+}
 
-        /* Pastikan hole punya posisi relatif */
-        .hole {
-            position: relative;
-            overflow: hidden; /* Supaya kucing bisa 'sembunyi' ke bawah */
-            background: #e0f2f1; /* Warna lubang, bisa diganti sesuai selera */
-            border-radius: 50%;
-        }
+/* Kucing aktif / muncul */
+.cat-character.active {
+    transform: translateY(0%) scale(1);
+    opacity: 1;
+}
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-        }
+/* Kucing saat berhasil dipukul */
+.cat-character.hit {
+    transform: translateY(110%) scale(0.8) rotate(15deg);
+    opacity: 0.5;
+    transition: transform 0.15s ease-in, opacity 0.15s;
+}
 
-        .stat-card {
-            background: white;
-            padding: 12px 5px;
-            border-radius: 20px;
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+/* Animasi Goyang Pusing saat kucing dipukul */
+@keyframes dizzyWiggle {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    25%       { transform: rotate(-8deg) translateY(-2px); }
+    75%       { transform: rotate(8deg) translateY(2px); }
+}
 
-        .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #a0a0a0; }
-        .stat-value { font-weight: 700; font-size: 1.3rem; color: #ff80ab; }
+.dizzy-animation {
+    animation: dizzyWiggle 0.15s infinite;
+}
 
-        .game-board {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+/* Animasi Efek Partikel Bintang Meledak */
+.particle {
+    pointer-events: none;
+    position: absolute;
+    animation: burst 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
 
-        .hole {
-            aspect-ratio: 1/1;
-            background: #f1f3f5;
-            border-radius: 30%;
-            box-shadow: var(--hole-shadow);
-            position: relative;
-            overflow: hidden;
-            border: 4px solid #fff;
-        }
-
-        .mole {
-            width: 75%;
-            height: 75%;
-            background: var(--mint);
-            border-radius: 50% 50% 30% 30%;
-            position: absolute;
-            left: 12.5%;
-            top: 100%; 
-            transition: top 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Transisi lebih lambat */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-
-        .mole:nth-child(even) { background: var(--soft-blue); }
-        .mole.up { top: 15%; }
-        .mole i { color: white; width: 35px; height: 35px; pointer-events: none; }
-
-        .particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: var(--pink);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: explode 0.5s ease-out forwards;
-        }
-
-        @keyframes explode {
-            to { transform: translate(var(--x), var(--y)); opacity: 0; }
-        }
-
-        .btn-main {
-            background: var(--mint);
-            border: none;
-            padding: 16px 45px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(178, 223, 219, 0.4);
-            transition: 0.3s;
-            width: 100%;
-        }
-
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(178, 223, 219, 0.5); }
-        .btn-main:active { transform: translateY(0); }
-        .btn-main:disabled { background: #dcdde1; box-shadow: none; cursor: not-allowed; }
-
-        .modal {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-card {
-            background: white;
-            padding: 40px;
-            border-radius: 40px;
-            box-shadow: var(--card-shadow);
-            text-align: center;
-            width: 85%;
-            max-width: 350px;
-        }
-
-        .modal-card h2 { color: var(--pink); font-size: 2rem; margin-bottom: 10px; }
-        .modal-card p { margin-bottom: 25px; color: #636e72; }
-
-        @media (max-width: 400px) {
-            h1 { font-size: 1.8rem; }
-            .game-board { gap: 10px; }
-            .container { padding: 15px; }
-        }
+@keyframes burst {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--angle));
+        opacity: 0;
+    }
+}

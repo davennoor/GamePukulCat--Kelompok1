@@ -1,68 +1,234 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- =========================================
+         1. BAGIAN META & EKSTERNAL LIBRARY (HTML)
+         ========================================= -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pukul Tikus Aestethic</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <title>Pukul Cat! - Premium Edition</title>
+
+    <!-- Library CSS Eksternal (Tailwind & FontAwesome) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- File CSS Lokal -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <div class="sound-ctrl" id="sound-toggle">
-            <i data-lucide="volume-2"></i>
+<body class="min-h-screen flex items-center justify-center p-4 selection:bg-rose-200">
+
+    <!-- =========================================
+         3. BAGIAN STRUKTUR HALAMAN (HTML)
+         ========================================= -->
+    <div class="relative w-full max-w-lg mx-auto bg-white/70 backdrop-blur-md rounded-3xl p-6 md:p-8 neo-flat border border-white/40 overflow-hidden">
+
+        <!-- Ornamen Latar Belakang (Blob Warna Estetik) -->
+        <div class="absolute -top-16 -left-16 w-32 h-32 bg-cyan-200/40 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-16 -right-16 w-40 h-40 bg-pink-200/40 rounded-full blur-2xl"></div>
+
+        <!-- Header Game: Judul & Tombol Pengaturan -->
+        <div class="relative flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-500 via-rose-400 to-pink-500 bg-clip-text text-transparent flex items-center gap-2">
+                    Pukul Cat! <span class="animate-bounce">🐾</span>
+                </h1>
+                <p class="text-xs text-slate-500 font-semibold mt-1 tracking-wider uppercase">Kelompok 1 • Premium Edition</p>
+            </div>
+
+            <!-- Tombol Suara & Panduan Cara Bermain -->
+            <div class="flex gap-2">
+                <button id="btn-sound" class="w-10 h-10 rounded-xl bg-white neo-btn flex items-center justify-center text-slate-600 hover:text-rose-500" title="Suara">
+                    <i id="sound-icon" class="fas fa-volume-up"></i>
+                </button>
+                <button id="btn-help" class="w-10 h-10 rounded-xl bg-white neo-btn flex items-center justify-center text-slate-600 hover:text-cyan-500" title="Cara Bermain">
+                    <i class="fas fa-question"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="header">
-            <h1>Pukul <span style="color:var(--pink)">Cat!</span></h1>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-label">Skor</span>
-                    <span id="score" class="stat-value">0</span>
+        <!-- Panel Informasi Utama (Skor, Waktu, Level, Record Terbaik) -->
+        <div class="grid grid-cols-4 gap-3 mb-6">
+            <!-- Papan Skor -->
+            <div class="bg-rose-50/80 rounded-2xl p-3 border border-rose-100 text-center flex flex-col justify-center neo-btn">
+                <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Skor</span>
+                <span id="score-val" class="text-2xl font-black text-rose-500 mt-0.5">0</span>
+            </div>
+            <!-- Papan Sisa Waktu -->
+            <div id="waktu-card" class="bg-cyan-50/80 rounded-2xl p-3 border border-cyan-100 text-center flex flex-col justify-center transition-all duration-300 neo-btn">
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Waktu</span>
+                <span id="time-val" class="text-2xl font-black text-cyan-500 mt-0.5">30</span>
+            </div>
+            <!-- Papan Level Dinamis -->
+            <div class="bg-purple-50/80 rounded-2xl p-3 border border-purple-100 text-center flex flex-col justify-center neo-btn">
+                <span class="text-[10px] font-bold text-purple-400 uppercase tracking-widest">Level</span>
+                <span id="level-val" class="text-2xl font-black text-purple-500 mt-0.5">1</span>
+            </div>
+            <!-- Papan Skor Record Terbanyak -->
+            <div class="bg-amber-50/80 rounded-2xl p-3 border border-amber-100 text-center flex flex-col justify-center neo-btn">
+                <span class="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Record</span>
+                <span id="record-val" class="text-2xl font-black text-amber-600 mt-0.5">0</span>
+            </div>
+        </div>
+
+        <!-- Pemilih Kesulitan Awal Game -->
+        <div class="mb-5">
+            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Pilih Kesulitan Awal</label>
+            <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl neo-inset">
+                <button id="diff-easy" onclick="setDifficulty('easy')" class="py-2 px-1 text-xs font-bold rounded-xl transition-all duration-300 bg-white text-rose-500 shadow-sm">
+                    Mudah
+                </button>
+                <button id="diff-medium" onclick="setDifficulty('medium')" class="py-2 px-1 text-xs font-bold rounded-xl transition-all duration-300 text-slate-500 hover:text-slate-700">
+                    Sedang
+                </button>
+                <button id="diff-hard" onclick="setDifficulty('hard')" class="py-2 px-1 text-xs font-bold rounded-xl transition-all duration-300 text-slate-500 hover:text-slate-700">
+                    Sulit
+                </button>
+            </div>
+        </div>
+
+        <!-- Papan Grid Lubang Kucing (3x3 Grid) -->
+        <div class="relative bg-slate-100/80 p-5 rounded-3xl neo-inset grid grid-cols-3 gap-4 aspect-square mb-6">
+
+            <!-- Lubang 0 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(0)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-0" class="cat-character w-full h-full relative"></div>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">Waktu</span>
-                    <span id="timer" class="stat-value">30</span>
+            </div>
+            <!-- Lubang 1 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(1)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-1" class="cat-character w-full h-full relative"></div>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">Record</span>
-                    <span id="high-score" class="stat-value">0</span>
+            </div>
+            <!-- Lubang 2 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(2)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-2" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+            <!-- Lubang 3 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(3)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-3" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+            <!-- Lubang 4 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(4)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-4" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+            <!-- Lubang 5 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(5)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-5" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+            <!-- Lubang 6 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(6)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-6" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+            <!-- Lubang 7 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(7)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-7" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+            <!-- Lubang 8 -->
+            <div class="relative bg-white/90 rounded-2xl neo-inset aspect-square overflow-hidden border border-slate-200/50 flex items-end justify-center group cursor-pointer" onclick="whack(8)">
+                <div class="cat-container w-[90%] h-[90%] relative flex items-end justify-center pointer-events-none">
+                    <div id="cat-8" class="cat-character w-full h-full relative"></div>
+                </div>
+            </div>
+
+            <!-- Tampilan Penutup saat game dijeda sementara (Pause Screen) -->
+            <div id="pause-overlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm rounded-3xl flex flex-col justify-center items-center transition-all duration-300 opacity-0 pointer-events-none z-10">
+                <div class="bg-white/90 px-6 py-4 rounded-2xl shadow-xl text-center scale-95 transition-all duration-300" id="pause-content">
+                    <i class="fas fa-pause text-amber-500 text-3xl mb-2 animate-pulse"></i>
+                    <h3 class="text-lg font-extrabold text-slate-700">Game Dihentikan Sementara</h3>
+                    <p class="text-xs text-slate-500 mt-1">Tekan tombol main untuk melanjutkan</p>
                 </div>
             </div>
         </div>
 
-        <div class="game-board">
-    <!-- Ulangi blok ini sebanyak 9 kali -->
-    <div class="hole">
-        <div class="mole">
-            <img src="kucinglucu.png" alt="mole" class="mole-img">
-        </div>
-    </div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-    <div class="hole"><div class="mole"><img src="kucinglucu.png" alt="mole" class="mole-img"></div></div>
-</div>
+        <!-- Tombol Aksi & Kontrol Game -->
+        <div class="flex flex-col gap-3">
+            <!-- Tombol Utama: Mulai / Pause -->
+            <button id="btn-primary" onclick="togglePlayPause()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-extrabold text-lg shadow-lg shadow-pink-200 hover:shadow-xl hover:shadow-pink-300 transition-all duration-300 active:scale-98 flex items-center justify-center gap-2">
+                <i class="fas fa-play" id="primary-icon"></i>
+                <span id="primary-text">Mulai Bermain</span>
+            </button>
 
-    <button id="start-btn" class="btn-main">Mulai Bermain</button>
-    </div>
-
-    <div id="modal" class="modal">
-        <div class="modal-card">
-            <h2>Selesai!</h2>
-            <p>Skor kamu: <span id="final-score" style="color:var(--pink); font-weight:bold;">0</span></p>
-            <button id="restart-btn" class="btn-main">Coba Lagi</button>
+            <!-- Panel Tombol Tambahan (Mulai Ulang, Berhenti Permanen) -->
+            <div class="grid grid-cols-2 gap-3" id="sub-controls">
+                <button onclick="restartGame()" class="py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-sm neo-btn flex items-center justify-center gap-2 hover:bg-slate-50">
+                    <i class="fas fa-redo text-cyan-500"></i>
+                    Mulai Ulang
+                </button>
+                <button onclick="stopGame()" class="py-3 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-sm neo-btn flex items-center justify-center gap-2 hover:bg-slate-50">
+                    <i class="fas fa-stop text-rose-500"></i>
+                    Berhenti
+                </button>
+            </div>
         </div>
     </div>
 
-    <audio id="sfx-hit" src="meow.mp3"></audio>
-    <audio id="bg-music" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+    <!-- Modal: Game Over Popup (Saat Waktu Habis) -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border border-white/50 scale-90 transition-transform duration-300" id="gameover-box">
+            <div class="w-20 h-20 mx-auto bg-rose-100 rounded-full flex items-center justify-center mb-4">
+                <span class="text-4xl">🏆</span>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800">Waktu Habis!</h2>
+            <p class="text-slate-500 text-sm mt-1">Permainan berakhir. Luar biasa!</p>
 
+            <div class="my-5 p-4 bg-slate-50 rounded-2xl border border-slate-100 grid grid-cols-2 gap-2">
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Skor Akhir</span>
+                    <span id="final-score" class="text-2xl font-black text-rose-500">0</span>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Level Tertinggi</span>
+                    <span id="final-level" class="text-2xl font-black text-purple-500">1</span>
+                </div>
+            </div>
+
+            <!-- Lencana Rekor Baru -->
+            <div id="new-high-score-badge" class="hidden mb-4 py-1.5 px-3 bg-amber-100 text-amber-700 text-xs font-bold rounded-full animate-bounce">
+                🎉 Rekor Baru Terpecahkan! 🎉
+            </div>
+
+            <button onclick="closeGameOverAndRestart()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-extrabold text-sm shadow-md shadow-pink-100 hover:shadow-lg hover:shadow-pink-200 transition-all">
+                Main Lagi
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal: Informasi Cara Bermain (Panduan Singkat) -->
+    <div id="modal-help" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-white/50 scale-90 transition-transform duration-300" id="help-box">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-extrabold text-slate-800">Panduan Bermain 🐾</h3>
+                <button onclick="toggleHelp(false)" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="space-y-3 text-sm text-slate-600">
+                <p>1. 🐱 <strong>Pukul Kucing</strong>: Ketuk/klik kucing yang muncul dari lubang untuk mendapatkan skor.</p>
+                <p>2. 🎩 <strong>Kucing Spesial</strong>: Beberapa kucing memakai <strong>Mahkota Emas</strong> 👑. Memukul mereka memberi skor ganda (+2)!</p>
+                <p>3. ⚡ <strong>Maksimal 2 Kucing</strong>: Hati-hati! Seiring naiknya level, akan ada maksimal 2 kucing muncul bersamaan.</p>
+                <p>4. 📈 <strong>Kenaikan Level</strong>: Setiap kelipatan <strong>10 poin</strong>, level bertambah dan pergerakan kucing makin cepat!</p>
+                <p>5. ⏸️ <strong>Kontrol Lengkap</strong>: Kamu bisa klik tombol <strong>Berhenti Dulu</strong> (Pause), <strong>Mulai Ulang</strong>, atau <strong>Berhenti</strong> kapan saja.</p>
+            </div>
+            <button onclick="toggleHelp(false)" class="w-full mt-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-sm transition-all">
+                Saya Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- File JS Lokal -->
     <script src="script.js"></script>
 </body>
 </html>
